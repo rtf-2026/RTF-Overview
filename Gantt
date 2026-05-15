@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RTF Cross-Functional Timeline</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff; --bg2: #f5f5f3; --bg3: #eeece8;
+    --text: #1a1a18; --text2: #6b6b67; --text3: #9a9a96;
+    --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.22);
+    --radius: 8px; --radius-lg: 12px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a; --bg2: #252523; --bg3: #2e2e2b;
+      --text: #f0ede8; --text2: #a0a09a; --text3: #6b6b67;
+      --border: rgba(255,255,255,0.1); --border2: rgba(255,255,255,0.2);
+    }
+  }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); padding: 2rem 1.5rem; min-height: 100vh; }
+  .page { max-width: 1100px; margin: 0 auto; }
+  .hdr { padding-bottom: 1rem; border-bottom: 0.5px solid var(--border); margin-bottom: 1rem; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .hdr-left h1 { font-size: 20px; font-weight: 500; color: var(--text); }
+  .hdr-left p { font-size: 13px; color: var(--text2); margin-top: 3px; }
+  .hdr-right { font-size: 12px; color: var(--text3); padding-top: 4px; }
+  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; margin-bottom: 1rem; }
+  .mc { background: var(--bg2); border-radius: var(--radius); padding: 9px 12px; }
+  .mc .v { font-size: 20px; font-weight: 500; color: var(--text); line-height: 1.2; }
+  .mc .l { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .ctrls { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 0.75rem; align-items: center; }
+  .ctrls span { font-size: 11px; color: var(--text2); }
+  .fb { font-size: 11px; padding: 4px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text2); cursor: pointer; transition: all 0.12s; }
+  .fb:hover { background: var(--bg2); }
+  .fb.on { background: #534AB7; color: #EEEDFE; border-color: #534AB7; }
+  .leg { display: flex; gap: 12px; flex-wrap: wrap; font-size: 11px; color: var(--text2); margin-bottom: 0.75rem; }
+  .li { display: flex; align-items: center; gap: 4px; }
+  .ld { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+  .gw { overflow-x: auto; border: 0.5px solid var(--border); border-radius: var(--radius-lg); }
+  table { width: 100%; min-width: 860px; border-collapse: collapse; }
+  thead th { font-size: 10px; font-weight: 500; color: var(--text2); background: var(--bg2); position: sticky; top: 0; z-index: 2; padding: 0; border-bottom: 0.5px solid var(--border); }
+  th.lc { text-align: left; padding: 7px 10px; min-width: 200px; position: sticky; left: 0; z-index: 3; }
+  .sr td { padding: 4px 10px 3px; font-size: 10px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; background: var(--bg3); border-bottom: 0.5px solid var(--border); }
+  .tr td { padding: 1px 4px; border-bottom: 0.5px solid var(--border); vertical-align: middle; }
+  .tr:hover { background: var(--bg2); }
+  .nc { font-size: 11px; color: var(--text); padding-left: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; position: sticky; left: 0; background: var(--bg); z-index: 1; }
+  .tr:hover .nc { background: var(--bg2); }
+  .bc { position: relative; height: 24px; min-width: 600px; }
+  .bar { position: absolute; height: 13px; top: 5px; border-radius: 3px; cursor: pointer; transition: filter 0.1s; }
+  .bar:hover { filter: brightness(1.12); }
+  .dot { position: absolute; width: 12px; height: 12px; border-radius: 50%; top: 6px; transform: translateX(-50%); cursor: pointer; border: 2px solid var(--bg); }
+  .tl { position: absolute; top: 0; bottom: 0; width: 1.5px; background: #E24B4A; pointer-events: none; z-index: 5; }
+  .tlb { position: absolute; top: 1px; font-size: 9px; color: #E24B4A; transform: translateX(-50%); white-space: nowrap; font-weight: 500; }
+  .tip { position: fixed; background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 7px 11px; font-size: 12px; pointer-events: none; z-index: 9999; max-width: 260px; display: none; color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .tip strong { display: block; margin-bottom: 2px; }
+  .tip .tph { font-size: 11px; color: var(--text2); }
+  .tip .tdt { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .footer { margin-top: 1.5rem; font-size: 11px; color: var(--text3); border-top: 0.5px solid var(--border); padding-top: 1rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; }
+</style>
+</head>
+<body>
+<div class="page">
+ 
+<div class="hdr">
+  <div class="hdr-left">
+    <h1>RTF cross-functional timeline</h1>
+    <p><span id="sc">—</span> tasks shown · Jan 2026 → Q1 2027 · <span style="color:#E24B4A">▏</span> = today</p>
+  </div>
+  <div class="hdr-right">Rainbow Transformations Foundation · Updated May 2026</div>
+</div>
+ 
+<div class="metrics" id="mx"></div>
+ 
+<div class="ctrls">
+  <span>Filter:</span>
+  <button class="fb on" data-f="all">All</button>
+  <button class="fb" data-f="ms">Milestones</button>
+  <button class="fb" data-f="p0">Phase 0</button>
+  <button class="fb" data-f="p01">Phase 0→1</button>
+  <button class="fb" data-f="p1">Phase 1</button>
+  <button class="fb" data-f="p2">Phase 2</button>
+  <button class="fb" data-f="p3">Phase 3+</button>
+  <button class="fb" data-f="ref">Referral</button>
+  <button class="fb" data-f="clin">Clinical</button>
+  <button class="fb" data-f="gov">Design/Gov</button>
+  <button class="fb" data-f="key">Key partners</button>
+  <button class="fb" data-f="fund">Funding</button>
+</div>
+ 
+<div class="leg">
+  <span class="li"><span class="ld" style="background:#534AB7"></span>Phase 0</span>
+  <span class="li"><span class="ld" style="background:#1D9E75"></span>Phase 0→1</span>
+  <span class="li"><span class="ld" style="background:#378ADD"></span>Phase 1</span>
+  <span class="li"><span class="ld" style="background:#BA7517"></span>Phase 2</span>
+  <span class="li"><span class="ld" style="background:#D4537E"></span>Phase 3+</span>
+  <span class="li"><span class="ld" style="background:#888780"></span>Referral</span>
+  <span class="li"><span class="ld" style="background:#5DCAA5"></span>Clinical</span>
+  <span class="li"><span class="ld" style="background:#7F77DD"></span>Design/Gov</span>
+  <span class="li"><span class="ld" style="background:#D85A30"></span>Key partners</span>
+  <span class="li"><span class="ld" style="background:#EF9F27"></span>Funding</span>
+  <span class="li"><i class="ti ti-diamond" style="font-size:11px;color:#E24B4A"></i> Milestone</span>
+  <span class="li"><span class="ld" style="background:#aaa;opacity:.4"></span>Past</span>
+</div>
+ 
+<div class="gw">
+  <table id="gt"><thead id="gh"></thead><tbody id="gb"></tbody></table>
+</div>
+ 
+<div class="footer">
+  <span>Rainbow Transformations Foundation · rainbowtransformationsfoundation.org</span>
+  <span>Source: Asana · Cross-functional project plan</span>
+</div>
+ 
+</div>
+<div class="tip" id="tip"></div>
+ 
+<script>
+const TODAY = new Date('2026-05-15');
+const S = new Date('2026-01-01');
+const E = new Date('2027-04-01');
+const TD = (E - S) / 864e5;
+ 
+const SM = {
+  'Phase 0: Foundation & Partnership (~March–April 2026)':                {f:'p0',  c:'#534AB7', l:'Phase 0 — Foundation & Partnership'},
+  'Phase 0→1 Transition: Founding Team & Program Build (April–May 2026)': {f:'p01', c:'#1D9E75', l:'Phase 0→1 — Founding Team & Program Build'},
+  'Phase 1: Pilot Launch (~Jun–Sep 2026)':                                {f:'p1',  c:'#378ADD', l:'Phase 1 — Pilot Launch'},
+  'Phase 2: Stabilize & Learn (Sep 2026–Dec 2026)':                       {f:'p2',  c:'#BA7517', l:'Phase 2 — Stabilize & Learn'},
+  'Phase 3: Scale & Formalize (Year 2)':                                  {f:'p3',  c:'#D4537E', l:'Phase 3 — Scale & Formalize'},
+  'Key Partnerships':                                                     {f:'key', c:'#D85A30', l:'Key Partnerships'},
+  'Referral Partnerships':                                                {f:'ref', c:'#888780', l:'Referral Partnerships'},
+  'Clinical Partnerships':                                                {f:'clin',c:'#5DCAA5', l:'Clinical Partnerships'},
+  'Design & Governance Partnerships':                                     {f:'gov', c:'#7F77DD', l:'Design & Governance Partnerships'},
+  'Funding':                                                              {f:'fund',c:'#EF9F27', l:'Funding'},
+};
+ 
+const ORDER = [
+  'Phase 0: Foundation & Partnership (~March–April 2026)',
+  'Phase 0→1 Transition: Founding Team & Program Build (April–May 2026)',
+  'Phase 1: Pilot Launch (~Jun–Sep 2026)',
+  'Phase 2: Stabilize & Learn (Sep 2026–Dec 2026)',
+  'Phase 3: Scale & Formalize (Year 2)',
+  'Key Partnerships',
+  'Referral Partnerships',
+  'Clinical Partnerships',
+  'Design & Governance Partnerships',
+  'Funding',
+];
+ 
+const T = [
+  {s:'Phase 0: Foundation & Partnership (~March–April 2026)',n:'Rescope mission & strategic priorities',st:'2026-03-02',en:'2026-03-15',ms:false},
+  {s:'Phase 0: Foundation & Partnership (~March–April 2026)',n:'Build co-design team',st:'2026-03-15',en:'2026-04-06',ms:false},
+  {s:'Phase 0: Foundation & Partnership (~March–April 2026)',n:'Organizational Bible drafted and finalized',st:'2026-04-20',en:'2026-04-20',ms:true},
+  {s:'Phase 0: Foundation & Partnership (~March–April 2026)',n:'Tech stack established (GWS, Airtable, Zapier…)',st:'2026-04-01',en:'2026-04-20',ms:false},
+  {s:'Phase 0: Foundation & Partnership (~March–April 2026)',n:'Executive Manual drafted',st:'2026-04-15',en:'2026-05-01',ms:false},
+  {s:'Phase 0: Foundation & Partnership (~March–April 2026)',n:'Legal & Compliance Reference (in progress)',st:'2026-04-01',en:'2026-05-30',ms:false},
+  {s:'Phase 0: Foundation & Partnership (~March–April 2026)',n:'Budget Framework finalized',st:'2026-05-04',en:'2026-05-04',ms:true},
+  {s:'Phase 0: Foundation & Partnership (~March–April 2026)',n:'Hiring Practices Manual effective',st:'2026-05-05',en:'2026-05-05',ms:true},
+  {s:'Phase 0: Foundation & Partnership (~March–April 2026)',n:'Review Samia email (AHF/TCW/TL pathways)',st:'2026-05-15',en:'2026-05-15',ms:false},
+  {s:'Phase 0: Foundation & Partnership (~March–April 2026)',n:'Insurance finalized',st:'2026-05-18',en:'2026-05-18',ms:false},
+  {s:'Phase 0: Foundation & Partnership (~March–April 2026)',n:'Board reshuffle & increased commitment',st:'2026-05-22',en:'2026-05-22',ms:true},
+ 
+  {s:'Phase 0→1 Transition: Founding Team & Program Build (April–May 2026)',n:'Design Programs',st:'2026-04-01',en:'2026-04-01',ms:true},
+  {s:'Phase 0→1 Transition: Founding Team & Program Build (April–May 2026)',n:'Secure CONOTEC office space',st:'2026-04-27',en:'2026-04-27',ms:true},
+  {s:'Phase 0→1 Transition: Founding Team & Program Build (April–May 2026)',n:'Tx Experiences Survey design',st:'2026-05-01',en:'2026-05-20',ms:false},
+  {s:'Phase 0→1 Transition: Founding Team & Program Build (April–May 2026)',n:'Hiring Practices Manual effective — May 5',st:'2026-05-05',en:'2026-05-05',ms:false},
+  {s:'Phase 0→1 Transition: Founding Team & Program Build (April–May 2026)',n:'Intake & LOC Protocol completed',st:'2026-05-10',en:'2026-05-28',ms:false},
+  {s:'Phase 0→1 Transition: Founding Team & Program Build (April–May 2026)',n:'TRANSformers Program Guide completed',st:'2026-05-25',en:'2026-05-25',ms:true},
+  {s:'Phase 0→1 Transition: Founding Team & Program Build (April–May 2026)',n:'Training Curriculum — 4 modules + assessment',st:'2026-05-10',en:'2026-05-28',ms:true},
+  {s:'Phase 0→1 Transition: Founding Team & Program Build (April–May 2026)',n:'Crisis escalation chain built & tested',st:'2026-05-15',en:'2026-05-28',ms:false},
+  {s:'Phase 0→1 Transition: Founding Team & Program Build (April–May 2026)',n:'Debrief circle structure operational',st:'2026-05-20',en:'2026-05-28',ms:false},
+  {s:'Phase 0→1 Transition: Founding Team & Program Build (April–May 2026)',n:'Marketing strategy 3-month calendar',st:'2026-05-01',en:'2026-05-29',ms:false},
+  {s:'Phase 0→1 Transition: Founding Team & Program Build (April–May 2026)',n:'Review/Adjust Organizational Strategy',st:'2026-05-29',en:'2026-05-29',ms:true},
+  {s:'Phase 0→1 Transition: Founding Team & Program Build (April–May 2026)',n:'Kajabi training platform built',st:'2026-06-01',en:'2026-06-01',ms:true},
+  {s:'Phase 0→1 Transition: Founding Team & Program Build (April–May 2026)',n:'Out Couch CE credit issuance live',st:'2026-06-01',en:'2026-06-01',ms:false},
+ 
+  {s:'Phase 1: Pilot Launch (~Jun–Sep 2026)',n:'TRANSformers fully trained and cleared',st:'2026-05-10',en:'2026-05-10',ms:true},
+  {s:'Phase 1: Pilot Launch (~Jun–Sep 2026)',n:'Shift schedule live (evenings + weekends)',st:'2026-05-15',en:'2026-07-15',ms:false},
+  {s:'Phase 1: Pilot Launch (~Jun–Sep 2026)',n:'Founding TRANSformers recruitment opens',st:'2026-06-01',en:'2026-06-01',ms:true},
+  {s:'Phase 1: Pilot Launch (~Jun–Sep 2026)',n:'TRANSformers Launch',st:'2026-06-15',en:'2026-06-15',ms:true},
+  {s:'Phase 1: Pilot Launch (~Jun–Sep 2026)',n:'First clients: intake → LOC → bridge support',st:'2026-06-15',en:'2026-09-04',ms:false},
+  {s:'Phase 1: Pilot Launch (~Jun–Sep 2026)',n:'TGIPSS Launched',st:'2026-09-04',en:'2026-09-04',ms:true},
+  {s:'Phase 1: Pilot Launch (~Jun–Sep 2026)',n:'Near-term funding secured',st:'2026-09-07',en:'2026-09-07',ms:true},
+ 
+  {s:'Phase 2: Stabilize & Learn (Sep 2026–Dec 2026)',n:'Volunteer experience survey deployed',st:'2026-09-05',en:'2026-09-05',ms:true},
+  {s:'Phase 2: Stabilize & Learn (Sep 2026–Dec 2026)',n:'Program adjustments based on survey data',st:'2026-09-14',en:'2026-09-14',ms:true},
+  {s:'Phase 2: Stabilize & Learn (Sep 2026–Dec 2026)',n:'Outcomes tracking live (WHOQOL, NOMs)',st:'2026-09-14',en:'2026-09-14',ms:true},
+  {s:'Phase 2: Stabilize & Learn (Sep 2026–Dec 2026)',n:'Team Lead stipends begin ($150/month)',st:'2026-09-16',en:'2026-09-16',ms:true},
+  {s:'Phase 2: Stabilize & Learn (Sep 2026–Dec 2026)',n:'First public report / Substack update',st:'2026-10-01',en:'2026-10-01',ms:true},
+  {s:'Phase 2: Stabilize & Learn (Sep 2026–Dec 2026)',n:'Pre-RTF Snapshot Eval deployed',st:'2026-10-15',en:'2026-11-15',ms:false},
+ 
+  {s:'Phase 3: Scale & Formalize (Year 2)',n:'5–25 TRANSformers active',st:'2027-01-04',en:'2027-03-01',ms:false},
+  {s:'Phase 3: Scale & Formalize (Year 2)',n:'Peer Worker stipends begin ($100/month)',st:'2027-01-15',en:'2027-01-15',ms:true},
+  {s:'Phase 3: Scale & Formalize (Year 2)',n:'Curriculum sales to external orgs launched',st:'2027-01-25',en:'2027-03-01',ms:false},
+  {s:'Phase 3: Scale & Formalize (Year 2)',n:'Research partnerships (universities)',st:'2027-01-25',en:'2027-03-01',ms:false},
+  {s:'Phase 3: Scale & Formalize (Year 2)',n:'Trevor Project — joint funding exploration',st:'2027-01-01',en:'2027-03-01',ms:false},
+ 
+  {s:'Key Partnerships',n:'Trevor Project (Gabby Doyle — outreach May 13)',st:'2026-05-13',en:'2026-12-31',ms:false},
+  {s:'Key Partnerships',n:'LA County LGBTQ Commission (Sunitha — 1:1 May 19)',st:'2026-05-14',en:'2026-12-31',ms:false},
+  {s:'Key Partnerships',n:'Advocates for Human Potential',st:'2026-06-16',en:'2026-12-31',ms:false},
+ 
+  {s:'Referral Partnerships',n:'TransCanWork / Christine Fuston',st:'2026-04-28',en:'2026-12-31',ms:false},
+  {s:'Referral Partnerships',n:'FLUX / Connie Norman Empowerment Center',st:'2026-06-01',en:'2026-12-31',ms:false},
+  {s:'Referral Partnerships',n:'LA LGBT Center — TWC',st:'2026-07-01',en:'2026-07-29',ms:false},
+  {s:'Referral Partnerships',n:'LA LGBT Center — Mental Health',st:'2026-07-03',en:'2026-07-31',ms:false},
+  {s:'Referral Partnerships',n:'LA LGBT Center — Trans* Lounge',st:'2026-06-01',en:'2026-12-31',ms:false},
+  {s:'Referral Partnerships',n:'Trans Latin@ Coalition',st:'2026-07-01',en:'2026-12-31',ms:false},
+  {s:'Referral Partnerships',n:'SD LGBT Center',st:'2026-06-01',en:'2026-12-31',ms:false},
+  {s:'Referral Partnerships',n:'Amber Health',st:'2026-06-01',en:'2026-10-31',ms:false},
+ 
+  {s:'Clinical Partnerships',n:'Out Care (Jess Romeo)',st:'2026-03-01',en:'2026-12-31',ms:false},
+  {s:'Clinical Partnerships',n:'Out Couch (CE credits)',st:'2026-03-23',en:'2026-12-31',ms:false},
+  {s:'Clinical Partnerships',n:'USC Chan School of OT (Samia)',st:'2026-06-01',en:'2026-12-31',ms:false},
+  {s:'Clinical Partnerships',n:'Affirmative Counseling',st:'2026-06-01',en:'2026-12-31',ms:false},
+  {s:'Clinical Partnerships',n:'Doorway Therapeutics',st:'2026-06-15',en:'2026-12-31',ms:false},
+  {s:'Clinical Partnerships',n:'Antioch University (Rick — somatic curriculum)',st:'2026-08-03',en:'2026-12-31',ms:false},
+ 
+  {s:'Design & Governance Partnerships',n:'Patrick Lockwood',st:'2026-01-01',en:'2026-12-31',ms:false},
+  {s:'Design & Governance Partnerships',n:'Out Care',st:'2026-03-01',en:'2026-12-31',ms:false},
+  {s:'Design & Governance Partnerships',n:'Jeff Gaddess',st:'2026-03-02',en:'2026-12-31',ms:false},
+  {s:'Design & Governance Partnerships',n:'Rick Lepore',st:'2026-04-01',en:'2026-12-31',ms:false},
+  {s:'Design & Governance Partnerships',n:'Kiel McFarland',st:'2026-04-06',en:'2026-12-31',ms:false},
+  {s:'Design & Governance Partnerships',n:'Christine Fuston',st:'2026-04-28',en:'2026-12-31',ms:false},
+  {s:'Design & Governance Partnerships',n:'Vanessa Warri',st:'2026-05-13',en:'2026-12-31',ms:false},
+ 
+  {s:'Funding',n:'Existing RTF service revenue streams',st:'2026-01-01',en:'2026-12-31',ms:false},
+  {s:'Funding',n:'RKS',st:'2026-05-18',en:'2026-10-01',ms:false},
+  {s:'Funding',n:'Artist Fanbases',st:'2026-05-15',en:'2026-06-08',ms:false},
+  {s:'Funding',n:'Astraea',st:'2026-06-29',en:'2026-06-29',ms:false},
+  {s:'Funding',n:'Third Wave Fund',st:'2026-06-29',en:'2026-07-06',ms:false},
+  {s:'Funding',n:'Famous Parents of TGI Children',st:'2026-06-01',en:'2026-07-06',ms:false},
+  {s:'Funding',n:'Horizons Foundation',st:'2026-07-01',en:'2026-07-06',ms:false},
+  {s:'Funding',n:'Gilead COMPASS',st:'2026-07-06',en:'2026-07-20',ms:false},
+  {s:'Funding',n:'Transgender Law Center',st:'2026-06-01',en:'2026-08-01',ms:false},
+  {s:'Funding',n:'RWJF',st:'2026-07-20',en:'2026-08-24',ms:false},
+  {s:'Funding',n:'USC (grant)',st:'2026-08-01',en:'2026-09-28',ms:false},
+  {s:'Funding',n:'Other Music Artists',st:'2026-07-01',en:'2026-10-26',ms:false},
+];
+ 
+let filt = 'all';
+ 
+function doff(d) { return (new Date(d) - S) / 864e5; }
+function pct(x) { return Math.min(100, Math.max(0, x / TD * 100)); }
+function fmt(d) { return d ? new Date(d).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'2-digit'}) : ''; }
+function meta(sec) { return SM[sec] || {f:'other', c:'#888780', l:sec}; }
+function vis(t) {
+  if (filt === 'all') return true;
+  if (filt === 'ms') return t.ms;
+  return meta(t.s).f === filt;
+}
+ 
+function buildMonths() {
+  const r = []; const c = new Date(S);
+  while (c < E) {
+    const lbl = c.toLocaleDateString('en-US', {month:'short', year:'2-digit'});
+    const p0 = pct(doff(c.toISOString().slice(0,10)));
+    const nx = new Date(c); nx.setMonth(nx.getMonth() + 1);
+    r.push({lbl, p0, w: pct(doff(nx.toISOString().slice(0,10))) - p0});
+    c.setMonth(c.getMonth() + 1);
+  }
+  return r;
+}
+ 
+function renderMetrics() {
+  const vt = T.filter(vis);
+  const ms = vt.filter(t => t.ms).length;
+  const past = vt.filter(t => new Date(t.en || t.st) < TODAY).length;
+  const active = vt.filter(t => new Date(t.st) <= TODAY && new Date(t.en || t.st) >= TODAY).length;
+  document.getElementById('mx').innerHTML =
+    `<div class="mc"><div class="v">${vt.length}</div><div class="l">shown</div></div>` +
+    `<div class="mc"><div class="v">${ms}</div><div class="l">milestones</div></div>` +
+    `<div class="mc"><div class="v">${active}</div><div class="l">active now</div></div>` +
+    `<div class="mc"><div class="v">${past}</div><div class="l">past</div></div>` +
+    `<div class="mc"><div class="v">${T.length}</div><div class="l">total tasks</div></div>`;
+}
+ 
+function render() {
+  const tp = pct(doff(TODAY.toISOString().slice(0,10)));
+  const mo = buildMonths();
+ 
+  document.getElementById('gh').innerHTML = `<tr>
+    <th class="lc">Task</th>
+    <th style="position:relative;padding:0;height:34px">
+      <div style="position:relative;height:34px;width:100%">
+        ${mo.map(m => `<div style="position:absolute;left:${m.p0.toFixed(2)}%;width:${m.w.toFixed(2)}%;height:100%;display:flex;align-items:center;justify-content:center;border-left:.5px solid var(--border);font-size:10px;color:var(--text2);overflow:hidden">${m.lbl}</div>`).join('')}
+        <div class="tl" style="left:${tp.toFixed(2)}%"><div class="tlb">today</div></div>
+      </div>
+    </th>
+  </tr>`;
+ 
+  let html = '';
+  ORDER.forEach(sec => {
+    const tasks = T.filter(t => t.s === sec && vis(t));
+    if (!tasks.length) return;
+    const m = meta(sec);
+    html += `<tr class="sr"><td colspan="2" style="border-left:3px solid ${m.c}">${m.l}</td></tr>`;
+    tasks.forEach(t => {
+      const sp = pct(doff(t.st));
+      const ep = pct(doff(t.en || t.st));
+      const wp = Math.max(0.4, ep - sp);
+      const isPast = new Date(t.en || t.st) < TODAY;
+      const isNow = new Date(t.st) <= TODAY && new Date(t.en || t.st) >= TODAY;
+      const op = isPast ? '0.45' : '0.9';
+      const nn = t.n.replace(/'/g, "\\'");
+      const el = t.ms
+        ? `<div class="dot" style="left:${sp.toFixed(2)}%;background:${m.c};opacity:${op}" onmouseenter="showTip(event,'${nn}','${t.st}','',true,'${m.l}')" onmouseleave="hideTip()"></div>`
+        : `<div class="bar" style="left:${sp.toFixed(2)}%;width:${wp.toFixed(2)}%;background:${m.c};opacity:${op};${isNow ? 'outline:1.5px solid '+m.c+';outline-offset:1px' : ''}" onmouseenter="showTip(event,'${nn}','${t.st}','${t.en}',false,'${m.l}')" onmouseleave="hideTip()"></div>`;
+      html += `<tr class="tr">
+        <td class="nc" title="${t.n}">${t.ms ? `<i class="ti ti-diamond" style="font-size:10px;color:${m.c};margin-right:2px;vertical-align:1px"></i>` : ''}${t.n}</td>
+        <td class="bc"><div style="position:relative;height:100%;width:100%">${el}<div class="tl" style="left:${tp.toFixed(2)}%"></div></div></td>
+      </tr>`;
+    });
+  });
+ 
+  document.getElementById('gb').innerHTML = html;
+  document.getElementById('sc').textContent = T.filter(vis).length;
+  renderMetrics();
+}
+ 
+function showTip(e, n, s, en, ms, ph) {
+  const tip = document.getElementById('tip');
+  tip.innerHTML = `<strong>${n}</strong><div class="tph">${ph}</div><div class="tdt">${ms ? '◆ Milestone · ' : ''}${fmt(s)}${en && en !== s ? ' → ' + fmt(en) : ''}</div>`;
+  tip.style.display = 'block';
+  tip.style.left = (e.clientX + 14) + 'px';
+  tip.style.top = (e.clientY - 10) + 'px';
+}
+function hideTip() { document.getElementById('tip').style.display = 'none'; }
+ 
+document.querySelectorAll('.fb').forEach(b => b.addEventListener('click', function() {
+  filt = this.dataset.f;
+  document.querySelectorAll('.fb').forEach(x => x.classList.remove('on'));
+  this.classList.add('on');
+  render();
+}));
+ 
+render();
+</script>
+</body>
+</html>
+ 
